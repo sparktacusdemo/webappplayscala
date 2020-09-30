@@ -1,0 +1,49 @@
+
+@(users: Seq[User], form: Form[UserForm.UserData], postUrl: Call)(implicit request: MessagesRequestHeader)
+
+@main("Users Form") {
+
+<h1>--Users--</h1>
+
+@* *******Flash shows updates to a page *@
+@request.flash.data.map{ case (name, value) =>
+<div>@name: @value</div>
+}
+
+<table>
+    <thead>
+    <tr><th>User|</th><th>|Age|</th><th>|@@Email|</th><th>|Sex|</th>
+    </thead>
+    <tbody>
+    @for(u <- users) {
+    <tr><td>@u.name</td><td>@u.age</td><td>@u.email</td><td>@u.sex</td></tr>
+    }
+    </tbody>
+</table>
+
+<hr/>
+
+@********************** Global errors are not tied to any particular form field *@
+
+@if(form.hasGlobalErrors) {
+@form.globalErrors.map { error: FormError =>
+<div>
+    @error.key: @error.message
+</div>
+}
+}
+
+@helper.form(postUrl) {
+@helper.CSRF.formField
+
+@helper.inputText(form("name"))
+
+@helper.inputText(form("age"))
+
+@helper.inputText(form("email"))
+
+@helper.inputText(form("sex"))
+
+<button>click to Create User</button>
+}
+}
